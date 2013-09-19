@@ -3,16 +3,16 @@ require 'spec_helper'
 class DslUser
   include BehaviorTree
   def make_action(*args)
-    action(*args) { puts 'hello' }
+    act(*args) { puts 'hello' }
   end
   def make_condition(*args)
-    condition(*args) { puts 'hello' }
+    cond(*args) { puts 'hello' }
   end
   def make_sequence(*args)
-    sequence(*args)
+    seq(*args)
   end
   def make_selector(*args)
-    selector(*args)
+    sel(*args)
   end
 end
 
