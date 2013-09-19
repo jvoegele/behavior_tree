@@ -23,8 +23,6 @@ class ToDrinkOrNotToDrink
   include BehaviorTree
 
   def initialize
-    drink = action { drink! }
-
     @behavior_tree =
       sel(
         seq(
