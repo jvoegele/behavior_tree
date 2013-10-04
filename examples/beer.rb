@@ -22,6 +22,10 @@ class ToDrinkOrNotToDrink
     @behavior_tree.behave
   end
 
+  def graphviz
+    @behavior_tree.to_graphviz
+  end
+
   def weekend?
     today = Time.now
     today.friday? || today.saturday?
@@ -48,5 +52,6 @@ end
 
 if __FILE__ == $0
   behavior = ToDrinkOrNotToDrink.new
+  behavior.graphviz.output(png: 'beer.png')
   behavior.decide
 end

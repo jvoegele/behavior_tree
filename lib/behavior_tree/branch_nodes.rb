@@ -1,6 +1,11 @@
 module BehaviorTree
-  class BranchNode
+  class BranchNode < NodeBase
+    include Util
+
     def initialize(*children)
+      if children.first.is_a?(String) || children.first.is_a?(Symbol)
+        @label = children.shift
+      end
       @children = children.flatten
     end
 
@@ -30,6 +35,19 @@ module BehaviorTree
         return branch_result
       end
     end
+
+    def to_graphviz(graph=nil)
+      if graph.nil?
+        graph_created_here = true
+        graph = create_graph
+      end
+      self_node = graph.add_node(self.object_id.to_s, graphviz_node_attrs)
+      @children.each do |child|
+        child_node = child.to_graphviz(graph)
+        graph.add_edge(self_node, child_node)
+      end
+      graph_created_here ? self_node.root_graph : self_node
+    end
   end
 
   # A Sequence is a branch node that evaluates its children in order until one
@@ -47,6 +65,20 @@ module BehaviorTree
     def branch_result
       true
     end
+
+    def to_s
+      "sequence(#{label})"
+    end
+
+    private
+
+    def graphviz_node_attrs
+      {label: self.to_s, shape: 'parallelogram'}
+    end
+
+    def graphviz_edge_attrs
+      {}
+    end
   end
 
   # A Selector is a branch node that evaluates its children in order until one
@@ -63,6 +95,20 @@ module BehaviorTree
 
     def branch_result
       false
+    end
+
+    def to_s
+      "selector(#{label})"
+    end
+
+    private
+
+    def graphviz_node_attrs
+      {label: self.to_s, style: 'dashed'}
+    end
+
+    def graphviz_edge_attrs
+      {}
     end
   end
 end
